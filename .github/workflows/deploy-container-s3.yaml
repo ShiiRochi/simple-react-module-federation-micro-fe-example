@@ -22,12 +22,14 @@ jobs:
         run: npm install --frozen-lockfile
       - name: Build
         run: npm run build
+        env:
+          PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
       - name: Install AWS CLI
         uses: shinyinc/action-aws-cli@v1.2
         # We can use Yandex ObjectStorage with AWS CLI this way
       - name: Sync build folder to Yandex ObjectStorage.
         run: |
-          aws s3 sync dist s3://${{ secrets.S3_BUCKET_NAME }}/container/latest --endpoint-url=https://storage.yandexcloud.net
+          aws s3 sync dist s3://${{ secrets.S3_BUCKET_PREFIX }}-container --endpoint-url=https://storage.yandexcloud.net
         env:
           # this is region for Yandex ObjectStorage
           AWS_DEFAULT_REGION: ru-central1
