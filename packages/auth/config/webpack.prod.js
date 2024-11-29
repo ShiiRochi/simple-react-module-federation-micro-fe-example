@@ -5,20 +5,20 @@ const packageJSON = require('../package.json');
 
 const common = require('./webpack.common');
 
-const domain = process.env.PRODUCTION_DOMAIN;
 
 /** @type { import('webpack').Configuration } */
 const prodConfig = {
     mode: "production",
     output: {
-        filename: "[name].[contenthash].js"
+        filename: "[name].[contenthash].js",
+        publicPath: "/packages/auth/latest/"
     },
     plugins: [
         new ModuleFederationPlugin({
-            name: "container",
-            remotes: {
-                marketing: `marketing@${domain}/packages/marketing/latest/remoteEntry.js`,
-                auth: `auth@${domain}/packages/auth/latest/remoteEntry.js`,
+            name: "auth",
+            filename: "remoteEntry.js",
+            exposes: {
+                './AuthApp': './src/bootstrap'
             },
             shared: packageJSON.dependencies
         })
